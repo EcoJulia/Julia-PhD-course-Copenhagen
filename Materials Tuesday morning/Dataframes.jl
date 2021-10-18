@@ -22,6 +22,11 @@ msleep.awake      # this is the same as [!, :awake]
 # Get a dataframe with all rows except the first and 
 # all sleep/awakeness related columns 
 
+# You can also select multiple columns by using a regular expression
+# regular expression search strings are created by `r"mysearchstring"`
+# E.g. try
+select(msleep, r"sleep_")
+
 # Exercise
 # use the `groupby` function to create a dataframe grouped by
 # order and "vore" called `gdf`
@@ -71,7 +76,7 @@ using DataFramesMeta
 # summarize   @combine          Creates summary statistisc
 # group_by    groupby           Groups
 
-# You can select columns using this similar format
+# You can select columns using this simple] format
 @select msleep :name :order
 
 @subset msleep :order .== "Rodentia" # here is how you would subset/filter rows
@@ -89,7 +94,7 @@ end
 # and total sleep, retaining only those with at least 16 hours of sleep
 
 # Exercise
-# Redo the exercise from line 46 with DataFramesMeta
+# Redo the exercise from line 51 with DataFramesMeta
 
 # use @combine to calculate the mean, minimum and maximum sleep
 # across different mammal orders
