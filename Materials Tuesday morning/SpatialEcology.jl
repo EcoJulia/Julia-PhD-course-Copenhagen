@@ -10,13 +10,20 @@ coord = CSV.read("coord.csv", DataFrame)
 world_mammals = Assemblage(mammals, coord)
 plot(world_mammals)
 
+# read NPP and add it
+NPP = CSV.read("npp.csv", DataFrame)
+addsitestats!(world_mammals, NPP, :coord)
+plot(:NPP, world_mammals, fc = cgrad(:Spectral, rev = true))
+
 # Add the regions data
 addsitestats!(world_mammals, regions[!, 3:end], :coord)
 
+plot(:Realm, world_mammals)
 # How can we plot the regions? A workaround with a list comprehension
-g = unique(world_mammals[:Realm])
-gg = [findfirst(isequal(x), g) for x in world_mammals[:Realm]]
-plot(gg, world_mammals, c = cgrad(:Paired_12, categorical = true))
+uniquerealms = unique(world_mammals[:Realm])
+realm_to_number = Dict(val => idx for (idx, val) in enumerate(uniquerealms))
+realmnumbers = [realm_to_number[x] for x in world_mammals[:Realm]]
+plot(realmnumbers, world_mammals, c = cgrad(:Paired_12, categorical = true))
 
 # Let's make a vector of all Afrotropical sites
 afr = findall(isequal("Afrotropical"), world_mammals[:Realm])
@@ -27,10 +34,7 @@ plot(afro_view, c = :Reds)
 afro = copy(afro_view)
 plot(afro, c = :Reds)
 
-# read NPP and add it
-NPP = CSV.read("npp.csv", DataFrame)
-addsitestats!(afro, NPP, :coord)
-plot(:NPP, afro, fc = :Spectral_r)
+# What is the relationship between npp and richness?
 scatter(afro[:NPP], richness(afro))
 
 # some information is readily accesible

@@ -4,6 +4,9 @@ using CSV, DataFrames
 
 # read the data set - note that you need a special package for this
 msleep = CSV.read("mammal_sleep.CSV", DataFrame)
+# Look at the DataFrame in the console - what are the element types
+# of the columns? Notice that some have a little questionmark after
+# - why do you think that is? (hint - it's not because Julia is in doubt)
 
 # Exercise:
 # Try running some basic descriptor functions for DataFrames
@@ -94,7 +97,7 @@ end
 # and total sleep, retaining only those with at least 16 hours of sleep
 
 # Exercise
-# Redo the exercise from line 51 with DataFramesMeta
+# Redo the exercise from line 54 with DataFramesMeta
 
 # use @combine to calculate the mean, minimum and maximum sleep
 # across different mammal orders
