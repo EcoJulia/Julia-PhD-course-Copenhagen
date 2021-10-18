@@ -325,6 +325,15 @@ md"#### Exercise
 Use a list comprehension to create a vector of strings such as `number_2` for all even numbers between 1 and 10"
 
 # ╔═╡ 9bf08f5b-a486-4240-a085-35422bdca8ab
+number = 2
+
+# ╔═╡ 635ea665-cdfb-469b-acb0-2c027a4f9eed
+"number_$(number)"
+
+# ╔═╡ c175cd30-dfa8-4955-8544-579a21f98c68
+
+
+# ╔═╡ adf71625-7443-4580-a929-5f4f358fc3b2
 
 
 # ╔═╡ 5bcb8b48-7795-4cb4-a324-ffee18d8bafd
@@ -384,8 +393,40 @@ ex2
 # ╔═╡ 6f74dbe4-ef34-4f0a-a257-dd50f378694b
 ex
 
-# ╔═╡ 3ba41fe0-a82a-4185-9eb1-fb558c050fd3
+# ╔═╡ 8d996044-6317-46a1-97b7-48d13ada8e1e
+md"""
+### Array views
+Another way of saving memory space is views
+"""
 
+# ╔═╡ d8ea7ff1-61ed-4932-8fb3-84b9811edf20
+v1 = rand(10)
+
+# ╔═╡ f0e01318-92ff-4366-b50a-764810cf2186
+v2 = v1[3:5]
+
+# ╔═╡ e9b29bf6-f472-4215-9c4a-79cc8e7a5937
+v1[4] = 2
+
+# ╔═╡ ea844c97-7daf-4dbc-bcbc-b5189580e967
+v2
+
+# ╔═╡ fb1888bd-c239-44c2-9c66-d4f458711f77
+md"""
+Instead, we can take a view
+"""
+
+# ╔═╡ 369b43bd-b6bd-48b2-acf1-a004f083110d
+v3 = view(v1, 3:5)
+
+# ╔═╡ 88888ea7-c723-40bf-a6df-2a178012abf9
+
+
+# ╔═╡ c8c1b2a1-7597-44a9-8ea6-b3c420b361d6
+v1[4] = 2
+
+# ╔═╡ 1a38103e-f468-4152-9f1e-51c4569ae026
+v3
 
 # ╔═╡ 2eefce35-e193-4659-99a3-760a73864fed
 md"""
@@ -467,6 +508,61 @@ count(==(0), myvec)
 md"""#### Exercise
 Create a function that will roll a 6-sided die 100 times, and another function that will count how many times each individual value appeared"""
 
+# ╔═╡ 08611a66-d961-4b4d-875d-28161f3b1204
+roll(xx) = rand(1:6, xx)
+
+# ╔═╡ d43ef339-7b12-4567-844d-a936ff4c0fa5
+roll(100)
+
+# ╔═╡ 005b6784-091b-4b20-be49-28e22f1ddf52
+function mycount(dice)
+	ret = zeros(Int, 6)
+	for value in dice
+		ret[value] += 1
+	end
+	ret
+end
+
+# ╔═╡ 6bf86712-5c3d-4ad8-afc3-ec1c439bb116
+mycount(roll(100))
+
+# ╔═╡ 55cfcb7a-5ed6-4810-8c12-7e3f57065e91
+function mycount2(dice)
+	ret = Dict()
+	for value in dice
+		if haskey(ret, value) 
+			ret[value] += 1
+		else
+			ret[value] = 1
+		end
+	end
+	ret
+end
+
+# ╔═╡ a69c91cd-cccd-46e2-90fe-678340ec7160
+mycount2(roll(100))
+
+# ╔═╡ 109a25b2-2c14-47b4-8dec-c2b1fe8e4ade
+Dict(i=>0 for i in 1:6)
+
+# ╔═╡ 3ce22b99-98d3-4f65-9bcd-20933f01c369
+
+
+# ╔═╡ f97a5010-952e-487e-af6e-9c723f2b0d4c
+
+
+# ╔═╡ 35ac3e0d-327d-4747-83dc-7b7e3f5eb670
+
+
+# ╔═╡ df25d8ea-98a9-44f8-a681-cb0d1cc41f86
+
+
+# ╔═╡ 3f06ecf6-5ea9-45db-bf32-61af4670213e
+
+
+# ╔═╡ c20603ca-7c43-4f84-80cb-f6ede465f526
+
+
 # ╔═╡ f1fb478a-4421-44dc-948f-35cc06a3c40d
 
 
@@ -521,6 +617,9 @@ randvec = rand(5)
 # ╔═╡ 1a37b9fa-609c-4f90-9103-4ab32958f189
 filter!(>(0.5), randvec) 
 
+# ╔═╡ aaecb7b7-e7ee-4620-a802-8d802c1bf11c
+randvec
+
 # ╔═╡ 15930f49-9168-43ba-8d0a-fe94106a0f64
 md"""
 #### Slurping and splatting: `...`
@@ -556,6 +655,9 @@ The basic design idea of julia is that functions behave differently when called 
 
 # ╔═╡ 4b1e44f1-d680-4dc8-b63c-827cc2a02eae
 n = Exponential(0.2)
+
+# ╔═╡ a09e78f8-2e7e-44a1-a236-4002716b9063
+n
 
 # ╔═╡ fba1172f-7e7c-45a5-9f75-6dc557953ccc
 plot(n)
@@ -1947,6 +2049,9 @@ version = "0.9.1+5"
 # ╠═ae8aaac9-915e-474a-b1e1-b35268b905ee
 # ╟─45c03247-f235-47d0-8660-075f90327add
 # ╠═9bf08f5b-a486-4240-a085-35422bdca8ab
+# ╠═635ea665-cdfb-469b-acb0-2c027a4f9eed
+# ╠═c175cd30-dfa8-4955-8544-579a21f98c68
+# ╠═adf71625-7443-4580-a929-5f4f358fc3b2
 # ╟─5bcb8b48-7795-4cb4-a324-ffee18d8bafd
 # ╟─d3999f96-6cc9-42a7-b7a9-919b3a65c3c1
 # ╠═d703431b-ca83-43e1-b366-139d87d2d8bd
@@ -1966,7 +2071,16 @@ version = "0.9.1+5"
 # ╠═3fe9fdec-fdc4-4666-9355-01affc1a0b88
 # ╠═bceb4df4-01ef-4c17-a898-767bccd74aab
 # ╠═6f74dbe4-ef34-4f0a-a257-dd50f378694b
-# ╠═3ba41fe0-a82a-4185-9eb1-fb558c050fd3
+# ╟─8d996044-6317-46a1-97b7-48d13ada8e1e
+# ╠═d8ea7ff1-61ed-4932-8fb3-84b9811edf20
+# ╠═f0e01318-92ff-4366-b50a-764810cf2186
+# ╠═e9b29bf6-f472-4215-9c4a-79cc8e7a5937
+# ╠═ea844c97-7daf-4dbc-bcbc-b5189580e967
+# ╠═fb1888bd-c239-44c2-9c66-d4f458711f77
+# ╠═369b43bd-b6bd-48b2-acf1-a004f083110d
+# ╠═88888ea7-c723-40bf-a6df-2a178012abf9
+# ╠═c8c1b2a1-7597-44a9-8ea6-b3c420b361d6
+# ╠═1a38103e-f468-4152-9f1e-51c4569ae026
 # ╟─2eefce35-e193-4659-99a3-760a73864fed
 # ╠═1674c224-e6a7-4d3e-9e4e-cdebd36a5315
 # ╠═da4ad281-262c-48af-89ff-8326a204ce09
@@ -1988,6 +2102,20 @@ version = "0.9.1+5"
 # ╠═dd5ec629-1ffc-42c5-9b92-75472224cdbc
 # ╠═5a167dca-39cd-4499-8299-940c004ba63e
 # ╟─3b61e90c-89fb-4d91-a110-3b9d4242cf2d
+# ╠═08611a66-d961-4b4d-875d-28161f3b1204
+# ╠═d43ef339-7b12-4567-844d-a936ff4c0fa5
+# ╠═005b6784-091b-4b20-be49-28e22f1ddf52
+# ╠═6bf86712-5c3d-4ad8-afc3-ec1c439bb116
+# ╠═55cfcb7a-5ed6-4810-8c12-7e3f57065e91
+# ╠═a69c91cd-cccd-46e2-90fe-678340ec7160
+# ╠═109a25b2-2c14-47b4-8dec-c2b1fe8e4ade
+# ╠═3ce22b99-98d3-4f65-9bcd-20933f01c369
+# ╠═f97a5010-952e-487e-af6e-9c723f2b0d4c
+# ╠═a09e78f8-2e7e-44a1-a236-4002716b9063
+# ╠═35ac3e0d-327d-4747-83dc-7b7e3f5eb670
+# ╠═df25d8ea-98a9-44f8-a681-cb0d1cc41f86
+# ╠═3f06ecf6-5ea9-45db-bf32-61af4670213e
+# ╠═c20603ca-7c43-4f84-80cb-f6ede465f526
 # ╠═f1fb478a-4421-44dc-948f-35cc06a3c40d
 # ╟─4b07f8b2-0484-4555-b0cb-8caa4bb7404c
 # ╠═921e3747-da80-4049-a127-810a443163d7
@@ -2002,6 +2130,7 @@ version = "0.9.1+5"
 # ╟─4823ca31-4552-4886-9f51-18937db0e992
 # ╠═d1888134-f86d-446b-b586-6b19f7396ef4
 # ╠═1a37b9fa-609c-4f90-9103-4ab32958f189
+# ╠═aaecb7b7-e7ee-4620-a802-8d802c1bf11c
 # ╟─15930f49-9168-43ba-8d0a-fe94106a0f64
 # ╠═b4e7b378-afa4-4bfa-87da-05a13b3333fc
 # ╟─4041297b-0e2f-4bc5-bed1-727f7ee50454
