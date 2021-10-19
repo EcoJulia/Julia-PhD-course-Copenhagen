@@ -11,7 +11,7 @@
 # GLM.jl, DataFrames.jl
 #
 # First, load the basic packages
-using GeoData, Plots, Downloads
+using GeoData, Plots, Downloads, RasterDataSources
 
 # Load raster data
 #
@@ -23,44 +23,32 @@ filename = getraster(WorldClim{BioClim}, 1)
 A = GeoArray(filename)
 plot(A)
 
-# Or use Selectors to use the dimension coordinates
-# Between selects a range of values
+# Or use Between to select a range of values
 plot(A[X=Between(100, 170), Band=1]) 
-# Near will find a particular value nearest our search
-A[X=Near(100), Y=Near(45), Band=1] 
-# At has to be EXACT, but can have a tolerance
-A[X=At(110; atol=1e7), Y=At(57; atol=1e7), Band=1] 
-
-# Its just an array! `broadcast` and other julia methods work
-A .* 10 |> plot
 
 # Now we know how it works, `getraster` is actually
 # integrated into GeoData, so you can just do:
-bio = GeoArray(WorldClim{BioClim}, 1)
-
-# We drop the Band dimension, also loading the array from disk into memory
-bio = bio[Band(1)]
+bio = GeoArray(WorldClim{BioClim}, 1)[Band=1]
+# We dropped the Band dimension, also loading the array from disk into memory
 plot(bio)
 
-# We could also load a multi-layer stack
-bio_stack = GeoStack(WorldClim{BioClim}, (1, 3, 5, 7))
-plot(bio_stack)
 
-#= !!!!!!! RasterDataSources.jl Examples !!!!!!!!
+#= !!!!!!! RasterDataSources.jl Execises !!!!!!!!
 
-Set a path for files (so we never fill your home directory)
+1. Set a path for files (so we never fill your home directory)
 
+It must already exist!
 =#
 ENV["RASTERDATASOURCES_PATH"] = "/path/to/your/data/"
 #=
 
-If you want to later, make this permanent by adding
-the above line to your startup.jl:
+Later, if you want, make this permanent by adding
+the above line to your startup.jl at:
 
 Windows : `C:\Users\USERNAME\.julia\config\startup.jl`
 Linux/Mac: `~/.julia/config/startup.jl`
 
-### Now get some data
+2. Get some data
 
 Get a RasterDataSources.jl dataset as a `GeoArray` or `GeoStack`, and plot
 some layers from one of:
@@ -68,6 +56,7 @@ some layers from one of:
 `WorldClim{Climate}`
 `EarthEnv{LandCover}`
 `EarthEnv{HabitatHeterogeneity}`
+`CHELSA{Future}` (hard! - see the `?Future` docs)
 
 See the docs for `RasterDataSources.getraster` for syntax.
 They may need a `layer` argument, and/or keyword arguments.
@@ -81,9 +70,6 @@ They may need a `layer` argument, and/or keyword arguments.
 # These are somewhat slow to plot and lines may have too much detail
 using GADM
 denmark_border = GADM.get("DNK").geom[1]
-sweden_border = GADM.get("SWE").geom[1]
-norway_border = GADM.get("NOR").geom[1]
-
 plot(denmark_border)
  
 # Use the Natural-Earth dataset
@@ -105,7 +91,7 @@ sweden_border = shapes.shapes[55]
 
 plot(sweden_border)
 
-#= !!!!!!! Shapefile.jl/GADM.jl Examples !!!!!!!!
+#= !!!!!!! Shapefile.jl/GADM.jl Execises !!!!!!!!
 
 # Shapefile and GADM
 
@@ -115,7 +101,7 @@ using 3-letter ISO country codes:
 https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes
 
 2. Download the natural earth dataset and use Shapefile.jl to
-plot some different countries (see what you get!)
+plot some different countries by number (see what you get!)
 =#
 
 
@@ -129,14 +115,14 @@ plot(d_masked)
 d_trimmed = trim(d_masked)
 plot(d_trimmed)
 
-# Now plot the outlines
+# Now plot the shapefile outlines
 plot!(denmark_border; fillalpha=0)
 
 # It works, but the shape is a cut off the edge of the pixels where
 # they are a little inside the line. We also need to apply this
 # to multiple shape files.
 #
-# So lets do it agai, and this time using a function  
+# So lets do it again, and this time using a function  
 #
 # We define a `mask_trim` to mask and trim to all shapes in
 # the same way, with padding of 10 pixels around the trimmed area.
@@ -181,16 +167,19 @@ borders!(p, denmark_border)
 borders!(p, norway_border)
 borders!(p, sweden_border)
 
+# And write the mosaic raster to disk
 write("scandinavia_bio1.nc", scandinavia)
 write("scandinavia_bio1.tif", scandinavia)
 
 
-#=!!!!!!! GeoData.jl Examples !!!!!!!!
+#=!!!!!!! GeoData.jl Execises !!!!!!!!
 
-- Cut out a region of a raster using `Between` for both `X` and `Y`
-- Get a single value using `Near(coord)` for both `X` and `Y`, and `Band(1)``.
+1. Cut out a region of a raster using `Between` for both `X` and `Y`
+    Save your result to a tif or nc file.
 
-Use some of the docs methods on a raster file you loaded earlier:
+2. Get a single value using `Near(coord)` for both `X` and `Y`, and `Band(1)``.
+
+3. Use some of the docs methods on a raster file you loaded earlier:
 
 - mask
 - trim
@@ -198,16 +187,14 @@ Use some of the docs methods on a raster file you loaded earlier:
 - aggregate
 - resample
 
-There are examples in all the docstrings, and in the package docs
-
-Save your results to a tif or nc file.
+There are examples in all the docstrings, and in the package docs.
 =#
 
 
 # # Counting Mammal diversity
 #
-# Open a the mammal range shape file 
-# Download from:
+# Open the mammal range shape file 
+# If you want to, download from:
 # https://www.iucnredlist.org/resources/spatial-data-download
 # 
 # Choose the "Terrestrial mammals" dataset
@@ -252,7 +239,7 @@ write("scandinavian_mammal_diversity.tif", masked_mammals)
 using GLM, DataFrames, Distributions
 
 # Get all the bioclim layers and crop/mask them to the ones we have 
-bio_stack = GeoStack(WorldClim{BioClim}, (1, 3, 10, 12))[Band(1)] |>
+bio_stack = GeoStack(WorldClim{BioClim}, (1, 3, 10, 12))[Band=1] |>
     x -> crop(x; to=scandinavia) |> 
     x -> mask(x; to=scandinavia) |>
     replace_missing
@@ -279,6 +266,11 @@ predictions = predict(model, variables)
 pred_rast = GeoArray(predictions, dims(masked_mammals); name=:predictions)
 plot(pred_rast)
 
+# Compare 
+p = plot(GeoStack(pred_rast, masked_mammals))
+borders!(p, denmark_border)
+borders!(p, norway_border)
+borders!(p, sweden_border)
 
 
 
