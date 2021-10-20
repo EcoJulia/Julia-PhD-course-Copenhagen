@@ -4,6 +4,7 @@ using CSV, DataFrames
 
 # read the data set - note that you need a special package for this
 msleep = CSV.read("mammal_sleep.CSV", DataFrame)
+
 # Look at the DataFrame in the console - what are the element types
 # of the columns? Notice that some have a little questionmark after
 # - why do you think that is? (hint - it's not because Julia is in doubt)

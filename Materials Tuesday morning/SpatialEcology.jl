@@ -50,10 +50,10 @@ quant = asquantiles(occupancy(afro), 4)
 addtraits!(afro, quant, :quart)
 
 # then we can split it on it
-sep = [view(afro, species = afro[:quartile] .== i) for i in 1:4]
+sep = [view(afro, species = afro[:quart] .== i) for i in 1:4]
 sep[1]
 quarts = groupspecies(afro, :quart)
 nspecies.(quarts)
-plot(plot.(quarts)...)
+plot(plot.(quarts, fc = :Reds, clim = (0,150))...)
 p = [scatter(n[:NPP], richness(n)) for n in quarts]
 plot(p...)
