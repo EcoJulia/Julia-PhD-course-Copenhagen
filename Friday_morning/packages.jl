@@ -2,10 +2,10 @@ using PkgTemplates
 
 # Set up a template
 t = Template(; 
-    user="rafaqz",             # Your github name
-    dir="~/julia",             # Where you want the file
-    authors="Rafael Schouten", # Your name
-    julia=v"1.5",              # Minimum Julia version is 1.5
+    user="mkborregaard",             # Your github name
+    dir="~/.julia/dev",             # Where you want the file
+    authors="Michael Krabbe Borregaard", # Your name
+    julia=v"1.7",              # Minimum Julia version is 1.5
     plugins=[
         License(; name="MIT"),          # Use the MIT license
         Git(; manifest=true, ssh=true), # Initialise a git repository in the folder 
@@ -17,7 +17,7 @@ t = Template(;
 )
 
 # Use the template to generate a package
-t("TestPackage")
+t("CoolNameForAPackage")
 
 using TestPackage, Revise
 

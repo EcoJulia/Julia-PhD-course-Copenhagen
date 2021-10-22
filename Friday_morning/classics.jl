@@ -5,32 +5,17 @@ using DynamicGrids
 # Use the dsctiption at:
 # https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
 
+life = Neighbors(Moore(1)) do _, hood, alive, _
+    if alive
+        sum(hood) in (2,3)
+    else
+        sum(hood) == 3
+    end
+end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+init = rand(Bool, 1000, 1000)
+repl_output = REPLOutput(init, tspan = 1:100)
+sim!(repl_output, life)
 
 
 
@@ -77,31 +62,31 @@ sim!(repl_output, life; boundary=Wrap(), proc=CuGPU())
 const EMPTY = 0
 const BURNING = 1
 const ALIVE = 2
+const p = 0.001
+const f = 0.1
 
 
+# It could be something like this
+fire = Neighbors(Moore(1)) do data, hood, active, I
+    if active == BURNING 
+        EMPTY
+    elseif active == ALIVE
+        if BURNING in hood || rand() < p
+            BURNING
+        else
+            ALIVE
+        end
+    else # EMPTY
+        rand() < f ? ALIVE : EMPTY
+    end
+end
 
 
+init = zeros(Int, 200, 200)
+repl_output = REPLOutput(init; tspan=1:200, fps=25)
+sim!(repl_output, fire; boundary=Wrap())
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#
 
 
 
