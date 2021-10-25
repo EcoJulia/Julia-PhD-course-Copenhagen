@@ -220,8 +220,6 @@ num_mammals = GeoArray(num_mammals; name=:mammal_diversity)
 # How long will this take??? the `@time` macro will time it.
 @time count_species!(num_mammals, mammal_ranges)
 
-# using ProfileView
-# @time count_species!(num_species, shp, 8000:9000)
 plot(num_mammals)
 num_mammals
 
